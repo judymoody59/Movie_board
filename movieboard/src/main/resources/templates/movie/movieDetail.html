@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>영화</title>
+    <link rel="stylesheet" th:href="@{/css/board.css}" />
+</head>
+<body>
+    <div class="container">
+        <h2>영화 상세</h2>
+        <form id="frm" method="post">
+        <input type="hidden" name="movieId" th:value="${movie.movieId}" />
+            <table class="board_detail">
+                <colgroup>
+                    <col width="15%" />
+                    <col width="*" />
+                    <col width="15%" />
+                    <col width="35%" />                    
+                </colgroup>
+                <tr>
+                   <th>영화 ID</th>
+                   <td th:text="${movie.movieId}"></td>
+                   <th>개봉일</th>
+                   <td th:text="${movie.releaseDate}"></td>
+                </tr>
+                <tr>
+                   <th>제목</th>
+                   <td colspan="3" th:text="${movie.title}"></td>
+                 </tr>
+                 <tr>
+                    <th>감독</th>
+                    <td th:text="${movie.director}"></td>
+                    <th>장르</th>
+                    <td th:text="${movie.genre}"></td>
+                  </tr>
+                  <tr>
+                    <th>평점</th>
+                    <td>
+                        <input type="number" name="rating" th:value="${movie.rating}" min="0" max="10" step="0.1" required />
+                    </td>
+                    <th>등록일</th>
+                    <td th:text="${movie.createdAt}"></td>
+                   </tr>
+                   <tr>
+                     <th>수정일</th>
+                     <td colspan="3" th:text="${movie.updatedAt}"></td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">설명</th>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <textarea id="description" name="description" required>[[${movie.description}]]</textarea>
+                        </td>                
+                    </tr>
+                </table>
+        </form>
+        <!-- 첨부파일 목록 -->
+        <div class="file_list">
+            <a th:each="file : ${movie.fileInfoList}" 
+                th:text="|${file.originalFileName} (${file.fileSize}kb)|"
+                th:href="@{/movie/downloadMovieFile.do(idx=${file.idx}, movieId=${file.movieId})}"></a>
+        </div>
+        
+        
+        <input type="button" id="list" class="btn" value="목록으로" />
+        <input type="button" id="update" class="btn" value="수정하기" />
+        <input type="button" id="delete" class="btn" value="삭제하기" />
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script>
+	        $(function() {
+	        	$("#list").on("click", function() {
+	        		location.href = "openMovieList.do";
+	        	});
+	        	$("#update").on("click", function() {
+                    let frm = $("#frm")[0];
+                    frm.action = "updateMovie.do";
+                    frm.submit();
+                });
+				$("#delete").on("click", function() {
+					let frm = $("#frm")[0];
+                    frm.action = "deleteMovie.do";
+                    frm.submit();
+				});
+	        });
+        </script>
+        
+    </div>
+</body>
+</html>

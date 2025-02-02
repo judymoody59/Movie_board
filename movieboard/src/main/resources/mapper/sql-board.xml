@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="movieboard.mapper.MovieMapper">
+    <select id="selectMovieList" resultType="movieboard.dto.MovieDto">
+        select 
+        	movie_id as movieId, 
+        	title, 
+        	director, 
+        	genre, 
+            rating, 
+            description, 
+            DATE_FORMAT(release_date, '%Y-%m-%d') as releaseDate,
+            DATE_FORMAT(created_at, '%Y.%m.%d %H:%i:%s') as createdAt,
+            DATE_FORMAT(updated_at, '%Y.%m.%d %H:%i:%s') as updatedAt
+          from Movies
+         order by movie_id desc
+    </select>
+    
+    <!--
+        외부 입력값을 쿼리에 반영할 경우, #{ }을 이용해야 SQL 인젝션 공격을 방어할 수 있음 
+        useGeneratedKeys : DBMS가 자동 생성한 키를 사용 
+        keyProperty : 반환하는 키 
+        
+     -->
+    <insert id="insertMovie" parameterType="movieboard.dto.MovieDto" useGeneratedKeys="true" keyProperty="movieId">
+        insert into Movies(title, director, genre, rating, description, release_date)
+        values (#{title}, #{director}, #{genre}, #{rating}, #{description}, #{releaseDate})
+    </insert>
+    
+     <select id="selectMovieDetail" parameterType="int" resultType="movieboard.dto.MovieDto">
+        select 
+        	movie_id as movieId, title, director, genre, rating, description, 
+        	DATE_FORMAT(release_date, '%Y-%m-%d') as releaseDate,
+            DATE_FORMAT(created_at, '%Y.%m.%d %H:%i:%s') as createdAt,
+            DATE_FORMAT(updated_at, '%Y.%m.%d %H:%i:%s') as updatedAt
+          from Movies
+         where movie_id = #{movieId}
+    </select>
+    
+    <update id="updateMovie" parameterType="movieboard.dto.MovieDto">
+        update Movies
+           set 
+             	rating = #{rating}
+             , description = #{description}
+             , updated_at = now()
+             
+         where movie_id = #{movieId}  
+    </update>
+    
+    <delete id="deleteMovie" parameterType="movieboard.dto.MovieDto">
+        DELETE FROM movies WHERE movie_id = #{movieId}
+    </delete>
+    
+    <insert id="insertMovieFileList" parameterType="movieboard.dto.MovieFileDto">
+        insert into movie_file
+            (movie_id, original_file_name, stored_file_path, file_size, created_at)
+        values 
+        <foreach collection="list" item="item" separator=",">
+            (#{item.movieId}, #{item.originalFileName}, #{item.storedFilePath}, #{item.fileSize},now())
+        </foreach>
+    </insert>
+    
+    <select id="selectMovieFileList" parameterType="int" resultType="movieboard.dto.MovieFileDto">
+        select idx, movie_id, original_file_name, format(round(file_size/1024), 0) as file_size
+          from movie_file
+         where movie_id = #{movieId}
+    </select>
+    
+    <select id="selectMovieFileInfo" parameterType="map" resultType="movieboard.dto.MovieFileDto">
+        select original_file_name, stored_file_path, file_size
+          from movie_file
+         where idx = #{idx} and movie_id = #{movieId} 
+    </select>
+   
+    
+
+    
+    
+    
+    
+</mapper>

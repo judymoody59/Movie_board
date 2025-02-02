@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration debug="true">
+    <!-- 
+        https://logback.qos.ch/manual/appenders.html
+        로그 출력 위치와 형식을 설정
+        ~~~~~~~~~~~~~~   ~~~~ 패턴을 이용해서 정의 
+        콘솔, 파일, DB 등
+     -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 로그 출력 형식 -->
+        <encoder>
+            <!-- 로그기록시간 로깅레벨 로깅이발생한카테고리 로그메시지 개행문자
+                 https://logback.qos.ch/manual/layouts.html -->
+            <Pattern>%d %5p {%c} %m%n</Pattern>
+        </encoder>
+    </appender>
+    
+    <!--  로그를 출력하는 요소
+          name 속성이 지정된 패키지 이하에 level 속성을 통해서 출력할 로그의 레벨을 조절해서 appender로 전달 -->
+    <logger name="movieboard" level="DEBUG" appender-ref="console"></logger>
+</configuration>

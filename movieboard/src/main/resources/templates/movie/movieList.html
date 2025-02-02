@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>영화</title>
+	<!--
+	<link rel="stylesheet" href="/css/board.css" />
+	-->
+	<link rel="stylesheet" th:href="@{/css/board.css}" />
+	
+</head>
+<body>
+    <div class="container">
+        <h2>영화 목록</h2>
+        <table class="board_list">
+            <colgroup>
+                <col width="10%" />
+                <col width="20%" />
+                <col width="15%" />
+                <col width="15%" />
+                <col width="10%" />
+                <col width="15%" />
+                <col width="15%" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col">영화 ID</th>
+                    <th scope="col">제목</th>
+                    <th scope="col">감독</th>
+                    <th scope="col">장르</th>
+                    <th scope="col">평점</th>
+                    <th scope="col">개봉일</th>
+                    <th scope="col">등록일</th>
+                </tr>
+            </thead>
+            <tbody>
+			    <tr th:if="${#lists.size(list)} > 0" th:each="list : ${list}">
+                    <td th:text="${list.movieId}"></td>
+
+			        
+			        <td class="title">
+                        <a href="/movie/openMovieDetail.do?movieId=" 
+                            th:attrappend="href=${list.movieId}" th:text="${list.title}"></a>
+                    </td>
+			
+			        <td th:text="${list.director}"></td>
+			        <td th:text="${list.genre}"></td>
+			        <td th:text="${list.rating}"></td>
+			        <td th:text="${list.releaseDate}"></td>
+			        <td th:text="${list.createdAt}"></td>
+			    </tr>
+			    
+			    <tr th:if="${#lists.isEmpty(list)}">
+			        <td colspan="7">조회된 영화가 없습니다.</td>
+			    </tr>
+			</tbody>
+        </table>
+        <a href="/movie/openMovieWrite.do" class="btn">글쓰기</a>
+    </div>
+</body>
+</html>
